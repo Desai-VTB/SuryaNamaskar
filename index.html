@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surya Namaskar — Guided Practice</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1B1035">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-deep:#1B1035;
+    --sky-mid:#4A2545;
+    --sky-now-a:#1B1035;
+    --sky-now-b:#4A2545;
+    --sun-core:#FF9F5A;
+    --sun-glow:#FFD37E;
+    --paper:#FBF3E7;
+    --ink:#2A1B2E;
+    --ink-soft:#6b5768;
+    --line:rgba(42,27,46,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    color:var(--paper);
+    background:linear-gradient(160deg, var(--sky-now-a) 0%, var(--sky-now-b) 55%, #1B1035 100%);
+    transition:background 2.5s ease;
+    display:flex;
+    justify-content:center;
+    padding:32px 18px 60px;
+  }
+  .wrap{width:100%;max-width:460px;}
+
+  header{text-align:center;margin-bottom:22px;}
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--sun-glow);
+    opacity:0.85;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:38px;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .sanskrit{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:16px;
+    color:var(--sun-glow);
+    opacity:0.9;
+  }
+
+  /* Sun arc — signature element */
+  .arc-wrap{margin:26px auto 8px;max-width:340px;}
+  svg{width:100%;height:auto;display:block;overflow:visible;}
+  .arc-path{fill:none;stroke:rgba(251,243,231,0.18);stroke-width:2;stroke-dasharray:1 7;stroke-linecap:round;}
+  .tick{fill:rgba(251,243,231,0.35);transition:fill 0.4s ease;}
+  .tick.done{fill:var(--sun-glow);}
+  .tick.active{fill:var(--sun-core);}
+  #sunMarker{filter:drop-shadow(0 0 10px var(--sun-core)) drop-shadow(0 0 22px rgba(255,159,90,0.6));transition:cx 0.6s ease, cy 0.6s ease;}
+  .horizon{stroke:rgba(251,243,231,0.15);stroke-width:1;}
+
+  .rep-line{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--sun-glow);
+    opacity:0.85;
+    margin:6px 0 20px;
+  }
+
+  .card{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:22px;
+    padding:28px 24px 26px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  }
+
+  /* Settings */
+  .field{margin-bottom:18px;}
+  .field:last-of-type{margin-bottom:0;}
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  input[type=number]{
+    width:100%;
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;
+    font-weight:700;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  input[type=number]:focus{outline:none;border-color:var(--sun-core);}
+
+  button{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    border:none;
+    border-radius:12px;
+    padding:15px;
+    width:100%;
+    cursor:pointer;
+    letter-spacing:0.01em;
+  }
+  .btn-start{
+    background:linear-gradient(135deg,var(--sun-core),var(--sun-glow));
+    color:var(--ink);
+    margin-top:6px;
+  }
+  .btn-start:active{transform:translateY(1px);}
+  .btn-stop{
+    background:transparent;
+    color:#b34a3f;
+    border:1.5px solid #e3c9c5;
+    margin-top:18px;
+  }
+
+  /* Practice view */
+  .practice{display:none;}
+  .practice.show{display:block;}
+  .settings.hide{display:none;}
+
+  .status-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+
+  .breath-pill{
+    display:inline-block;
+    padding:5px 14px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .breath-pill.inhale{background:rgba(255,159,90,0.18);color:#b5602a;}
+  .breath-pill.exhale{background:rgba(74,37,69,0.1);color:#4A2545;}
+
+  .breath-stage{
+    display:flex;
+    justify-content:center;
+    margin-bottom:18px;
+  }
+  .breath-circle{
+    width:64px;height:64px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--sun-glow), var(--sun-core));
+    transition:transform 2.4s ease;
+    transform:scale(0.75);
+  }
+  .breath-circle.inhale{transform:scale(1.15);}
+  .breath-circle.exhale{transform:scale(0.7);}
+
+  .pose-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:30px;
+    text-align:center;
+    margin:0 0 2px;
+    line-height:1.15;
+  }
+  .pose-english{
+    text-align:center;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .cue{
+    text-align:center;
+    font-size:15px;
+    line-height:1.5;
+    color:var(--ink);
+    min-height:44px;
+  }
+
+  .countdown{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:56px;
+    font-weight:700;
+    color:var(--sun-core);
+    margin:10px 0 4px;
+    min-height:64px;
+  }
+  .countdown-label{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+
+  footer{
+    text-align:center;
+    font-size:11px;
+    color:rgba(251,243,231,0.5);
+    margin-top:22px;
+    line-height:1.6;
+  }
+  .checkbox-label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    text-transform:none;
+    letter-spacing:normal;
+    cursor:pointer;
+  }
+  .checkbox-label input{width:16px;height:16px;accent-color:var(--sun-core);}
+  .music-field label{margin-bottom:0;}
+
+  .music-mute{
+    width:auto;
+    padding:5px 12px;
+    font-size:11px;
+    font-weight:600;
+    border-radius:999px;
+    background:rgba(74,37,69,0.08);
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+  }
+
+  .voice-warn{
+    display:none;
+    background:rgba(179,74,63,0.15);
+    color:#ffd3cd;
+    border:1px solid rgba(179,74,63,0.4);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:12px;
+    margin-bottom:16px;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Twelve poses, one breath</div>
+    <h1>Surya Namaskar</h1>
+    <div class="sanskrit">सूर्य नमस्कार</div>
+  </header>
+
+  <div class="arc-wrap">
+    <svg viewBox="0 0 300 120">
+      <line class="horizon" x1="10" y1="112" x2="290" y2="112"/>
+      <path id="arcPath" class="arc-path" d="M 20 112 A 130 130 0 0 1 280 112"/>
+      <g id="ticks"></g>
+      <circle id="sunMarker" r="7" fill="var(--sun-core)" cx="20" cy="112"/>
+    </svg>
+  </div>
+  <div class="rep-line" id="repLine">Round 1 of 1 &nbsp;·&nbsp; Pose 0 of 12</div>
+
+  <div class="card">
+
+    <div class="voice-warn" id="voiceWarn">Your browser doesn't support spoken guidance. You can still follow along visually.</div>
+
+    <!-- SETTINGS -->
+    <div class="settings" id="settings">
+      <div class="field">
+        <label for="holdSecs">Hold duration (seconds)</label>
+        <input type="number" id="holdSecs" min="1" max="60" value="5">
+        <div class="hint">How long to hold each pose before the countdown ends.</div>
+      </div>
+      <div class="field">
+        <label for="reps">Number of rounds</label>
+        <input type="number" id="reps" min="1" max="20" value="3">
+        <div class="hint">How many full rounds of the sequence to complete.</div>
+      </div>
+      <div class="field">
+        <label for="gapSecs">Rest between rounds (seconds)</label>
+        <input type="number" id="gapSecs" min="0" max="120" value="15">
+        <div class="hint">Time to relax and breathe before the next round begins.</div>
+      </div>
+      <div class="field music-field">
+        <label class="checkbox-label" for="musicToggle">
+          <input type="checkbox" id="musicToggle" checked>
+          <span>Play soothing background flute</span>
+        </label>
+      </div>
+      <button class="btn-start" id="startBtn">Start practice</button>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="practice" id="practice">
+      <div class="status-row">
+        <span id="stateLabel">Getting ready…</span>
+        <button type="button" id="musicMuteBtn" class="music-mute">🎵 Music on</button>
+      </div>
+
+      <div class="breath-pill" id="breathPill">Inhale</div>
+      <div class="breath-stage"><div class="breath-circle" id="breathCircle"></div></div>
+
+      <div class="pose-name" id="poseName">—</div>
+      <div class="pose-english" id="poseEnglish">—</div>
+      <div class="cue" id="poseCue">—</div>
+
+      <div class="countdown-label" id="countLabel"></div>
+      <div class="countdown" id="countNum"></div>
+
+      <button class="btn-stop" id="stopBtn">Stop practice</button>
+    </div>
+
+  </div>
+
+  <footer>Turn your sound on. Best experienced with headphones or a quiet room.<br>Namaste 🙏</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Pose sequence ----------
+  const SEQUENCE = [
+    {sk:"Pranamasana", en:"Prayer Pose", breath:"exhale", cue:"Stand tall at the front of your mat, palms together at your chest."},
+    {sk:"Hasta Uttanasana", en:"Raised Arms Pose", breath:"inhale", cue:"Sweep your arms overhead and arch gently back."},
+    {sk:"Hasta Padasana", en:"Standing Forward Bend", breath:"exhale", cue:"Fold forward from your hips, hands reaching toward the floor."},
+    {sk:"Ashwa Sanchalanasana", en:"Equestrian Pose", breath:"inhale", cue:"Step your right leg back into a low lunge, and look up."},
+    {sk:"Phalakasana", en:"Plank Pose", breath:"exhale", cue:"Step your left leg back to meet the right, body in one straight line."},
+    {sk:"Ashtanga Namaskara", en:"Eight-Limbed Salute", breath:"exhale", cue:"Lower your knees, chest, and chin gently to the floor."},
+    {sk:"Bhujangasana", en:"Cobra Pose", breath:"inhale", cue:"Slide forward and lift your chest, elbows close to your body."},
+    {sk:"Adho Mukha Svanasana", en:"Downward-Facing Dog", breath:"exhale", cue:"Lift your hips up and back, forming an inverted V."},
+    {sk:"Ashwa Sanchalanasana", en:"Equestrian Pose", breath:"inhale", cue:"Step your right foot forward between your hands, and look up."},
+    {sk:"Hasta Padasana", en:"Standing Forward Bend", breath:"exhale", cue:"Step the left foot forward and fold, hands toward the floor."},
+    {sk:"Hasta Uttanasana", en:"Raised Arms Pose", breath:"inhale", cue:"Rise up, sweeping your arms overhead and arching back gently."},
+    {sk:"Pranamasana", en:"Prayer Pose", breath:"exhale", cue:"Stand tall and bring your palms together at your chest."}
+  ];
+
+  // ---------- DOM ----------
+  const els = {
+    settings: document.getElementById('settings'),
+    practice: document.getElementById('practice'),
+    startBtn: document.getElementById('startBtn'),
+    stopBtn: document.getElementById('stopBtn'),
+    holdSecs: document.getElementById('holdSecs'),
+    reps: document.getElementById('reps'),
+    gapSecs: document.getElementById('gapSecs'),
+    stateLabel: document.getElementById('stateLabel'),
+    musicMuteBtn: document.getElementById('musicMuteBtn'),
+    musicToggle: document.getElementById('musicToggle'),
+    breathPill: document.getElementById('breathPill'),
+    breathCircle: document.getElementById('breathCircle'),
+    poseName: document.getElementById('poseName'),
+    poseEnglish: document.getElementById('poseEnglish'),
+    poseCue: document.getElementById('poseCue'),
+    countLabel: document.getElementById('countLabel'),
+    countNum: document.getElementById('countNum'),
+    repLine: document.getElementById('repLine'),
+    ticks: document.getElementById('ticks'),
+    sunMarker: document.getElementById('sunMarker'),
+    arcPath: document.getElementById('arcPath'),
+    voiceWarn: document.getElementById('voiceWarn'),
+    body: document.body
+  };
+
+  // ---------- Sun arc setup ----------
+  const pathEl = els.arcPath;
+  const pathLen = pathEl.getTotalLength();
+  const N = SEQUENCE.length;
+  for (let i = 0; i < N; i++){
+    const frac = i / (N - 1);
+    const pt = pathEl.getPointAtLength(frac * pathLen);
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx", pt.x);
+    c.setAttribute("cy", pt.y);
+    c.setAttribute("r", 4);
+    c.setAttribute("class", "tick");
+    c.id = "tick-" + i;
+    els.ticks.appendChild(c);
+  }
+  function setArcProgress(fraction){
+    const pt = pathEl.getPointAtLength(Math.max(0, Math.min(1, fraction)) * pathLen);
+    els.sunMarker.setAttribute("cx", pt.x);
+    els.sunMarker.setAttribute("cy", pt.y);
+  }
+  function markTicks(poseIndex){
+    for (let i = 0; i < N; i++){
+      const t = document.getElementById("tick-" + i);
+      t.classList.remove("done","active");
+      if (i < poseIndex) t.classList.add("done");
+      if (i === poseIndex) t.classList.add("active");
+    }
+  }
+
+  // ---------- Sky background progress ----------
+  function setSky(fraction){
+    // dawn indigo -> warm gold as the overall session progresses
+    const a = lerpColor([27,16,53], [74,37,69], fraction);
+    const b = lerpColor([74,37,69], [255,159,90], fraction);
+    els.body.style.setProperty('--sky-now-a', rgb(a));
+    els.body.style.setProperty('--sky-now-b', rgb(b));
+  }
+  function lerpColor(c1,c2,f){ return c1.map((v,i)=>Math.round(v+(c2[i]-v)*f)); }
+  function rgb(c){ return `rgb(${c[0]},${c[1]},${c[2]})`; }
+
+  // ---------- Speech ----------
+  const synth = window.speechSynthesis;
+  let chosenVoice = null;
+  let speechSupported = !!synth;
+  if (!speechSupported){ els.voiceWarn.style.display = 'block'; }
+
+  function pickVoice(){
+    if (!speechSupported) return;
+    const voices = synth.getVoices();
+    chosenVoice = voices.find(v => v.lang && v.lang.startsWith('en')) || voices[0] || null;
+  }
+  if (speechSupported){
+    pickVoice();
+    synth.onvoiceschanged = pickVoice;
+  }
+
+  let stopRequested = false;
+
+  function speak(text){
+    return new Promise(resolve => {
+      if (stopRequested || !speechSupported){ resolve(); return; }
+      const u = new SpeechSynthesisUtterance(text);
+      if (chosenVoice) u.voice = chosenVoice;
+      u.rate = 0.95;
+      u.pitch = 1.0;
+      u.onend = resolve;
+      u.onerror = resolve;
+      synth.speak(u);
+    });
+  }
+
+  function wait(ms){
+    return new Promise(resolve => {
+      const start = Date.now();
+      (function tick(){
+        if (stopRequested || Date.now() - start >= ms) return resolve();
+        setTimeout(tick, 50);
+      })();
+    });
+  }
+
+  // ---------- Ambient background music (generative, flute-like) ----------
+  let audioCtx = null;
+  let masterGain = null;
+  let musicTimer = null;
+  let musicEnabled = true;
+  const PENTATONIC = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33]; // C D E G A C D — soft, consonant
+
+  function initAudio(){
+    if (audioCtx) return;
+    try{
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.0001;
+      masterGain.connect(audioCtx.destination);
+    }catch(e){ audioCtx = null; }
+  }
+
+  function playAmbientNote(){
+    if (!musicEnabled || !audioCtx) return;
+    const freq = PENTATONIC[Math.floor(Math.random() * PENTATONIC.length)];
+    const now = audioCtx.currentTime;
+    const dur = 3.4 + Math.random() * 2.0;
+
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+
+    // slow vibrato for a breathy, flute-like character
+    const vibrato = audioCtx.createOscillator();
+    vibrato.frequency.value = 4.2 + Math.random() * 0.6;
+    const vibratoGain = audioCtx.createGain();
+    vibratoGain.gain.value = 2.5;
+    vibrato.connect(vibratoGain);
+    vibratoGain.connect(osc.frequency);
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 2000;
+
+    const noteGain = audioCtx.createGain();
+    noteGain.gain.setValueAtTime(0, now);
+    noteGain.gain.linearRampToValueAtTime(0.1, now + 0.8);
+    noteGain.gain.linearRampToValueAtTime(0.0001, now + dur);
+
+    osc.connect(filter);
+    filter.connect(noteGain);
+    noteGain.connect(masterGain);
+
+    vibrato.start(now);
+    osc.start(now);
+    vibrato.stop(now + dur + 0.5);
+    osc.stop(now + dur + 0.5);
+  }
+
+  function startMusic(){
+    if (!musicEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 1.5);
+    playAmbientNote();
+    if (musicTimer) clearInterval(musicTimer);
+    musicTimer = setInterval(playAmbientNote, 3200);
+  }
+
+  function stopMusic(){
+    if (musicTimer){ clearInterval(musicTimer); musicTimer = null; }
+    if (masterGain && audioCtx){
+      masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+    }
+  }
+
+  function toggleMusicButton(){
+    els.musicMuteBtn.textContent = musicEnabled ? '🎵 Music on' : '🔇 Music off';
+  }
+
+  els.musicMuteBtn.addEventListener('click', () => {
+    musicEnabled = !musicEnabled;
+    toggleMusicButton();
+    if (musicEnabled) startMusic(); else stopMusic();
+  });
+
+  // ---------- UI helpers ----------
+  function showBreath(kind){
+    els.breathPill.textContent = kind === 'inhale' ? 'Inhale' : 'Exhale';
+    els.breathPill.className = 'breath-pill ' + kind;
+    els.breathCircle.className = 'breath-circle ' + kind;
+  }
+  function clearCountdown(){
+    els.countLabel.textContent = '';
+    els.countNum.textContent = '';
+  }
+
+  async function speakCountdown(fromNum, label){
+    els.countLabel.textContent = label;
+    for (let n = fromNum; n >= 1; n--){
+      if (stopRequested) return;
+      els.countNum.textContent = n;
+      await Promise.all([speak(String(n)), wait(650)]);
+    }
+    clearCountdown();
+  }
+
+  // ---------- Core sequence runner ----------
+  async function runPose(pose, poseIndex, totalReps, currentRep, holdSeconds){
+    if (stopRequested) return;
+    markTicks(poseIndex);
+    const overallFrac = ((currentRep - 1) * N + poseIndex) / (totalReps * N);
+    setArcProgress(overallFrac);
+    setSky(overallFrac);
+
+    els.poseName.textContent = pose.sk;
+    els.poseEnglish.textContent = pose.en;
+    els.poseCue.textContent = pose.cue;
+    els.repLine.textContent = `Round ${currentRep} of ${totalReps} · Pose ${poseIndex+1} of ${N}`;
+    showBreath(pose.breath);
+    clearCountdown();
+
+    els.stateLabel.textContent = 'Next pose';
+    await speak(pose.en);
+    if (stopRequested) return;
+
+    els.stateLabel.textContent = 'Instruction';
+    await speak(pose.cue);
+    if (stopRequested) return;
+
+    await wait(1500);
+    if (stopRequested) return;
+
+    els.stateLabel.textContent = pose.breath === 'inhale' ? 'Inhaling' : 'Exhaling';
+    await speak(pose.breath === 'inhale' ? 'Inhale.' : 'Exhale.');
+    if (stopRequested) return;
+
+    await wait(2000);
+    if (stopRequested) return;
+
+    els.stateLabel.textContent = 'Holding';
+    await speak('Hold.');
+    if (stopRequested) return;
+
+    await speakCountdown(holdSeconds, 'Hold');
+    if (stopRequested) return;
+  }
+
+  async function runSession(){
+    const holdSeconds = clampInt(els.holdSecs.value, 1, 60, 5);
+    const totalReps = clampInt(els.reps.value, 1, 20, 3);
+    const gapSecs = clampInt(els.gapSecs.value, 0, 120, 15);
+
+    for (let rep = 1; rep <= totalReps; rep++){
+      for (let i = 0; i < N; i++){
+        if (stopRequested) return finishStop();
+        await runPose(SEQUENCE[i], i, totalReps, rep, holdSeconds);
+      }
+      if (stopRequested) return finishStop();
+
+      markTicks(N);
+      setArcProgress(rep / totalReps);
+      setSky(rep / totalReps);
+
+      if (rep < totalReps){
+        els.poseName.textContent = 'Rest';
+        els.poseEnglish.textContent = '';
+        els.poseCue.textContent = 'Relax your breath and let your body settle.';
+        showBreath('exhale');
+        els.stateLabel.textContent = 'Resting';
+        if (gapSecs > 0){
+          await speak(`Well done. Prepare for the next round in ${gapSecs} seconds.`);
+          if (stopRequested) return finishStop();
+          await speakCountdown(gapSecs, 'Next round in');
+        }
+      }
+    }
+
+    if (stopRequested) return finishStop();
+    els.poseName.textContent = 'Namaste';
+    els.poseEnglish.textContent = '';
+    els.poseCue.textContent = 'You completed your practice. Well done.';
+    els.stateLabel.textContent = 'Complete';
+    clearCountdown();
+    await speak(`Namaste. You completed ${totalReps} round${totalReps>1?'s':''} of Surya Namaskar.`);
+    stopMusic();
+    els.stopBtn.textContent = 'Back to settings';
+  }
+
+  function clampInt(val, min, max, fallback){
+    let n = parseInt(val, 10);
+    if (isNaN(n)) n = fallback;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function finishStop(){
+    els.stateLabel.textContent = 'Stopped';
+    els.stopBtn.textContent = 'Back to settings';
+  }
+
+  // ---------- Controls ----------
+  els.startBtn.addEventListener('click', () => {
+    stopRequested = false;
+    els.settings.classList.add('hide');
+    els.practice.classList.add('show');
+    els.stopBtn.textContent = 'Stop practice';
+    setArcProgress(0);
+    markTicks(-1);
+    setSky(0);
+
+    musicEnabled = els.musicToggle.checked;
+    toggleMusicButton();
+    if (musicEnabled) startMusic();
+
+    runSession();
+  });
+
+  els.stopBtn.addEventListener('click', () => {
+    if (els.stopBtn.textContent === 'Back to settings'){
+      els.practice.classList.remove('show');
+      els.settings.classList.remove('hide');
+      clearCountdown();
+      stopMusic();
+      return;
+    }
+    stopRequested = true;
+    if (speechSupported) synth.cancel();
+    stopMusic();
+    els.stateLabel.textContent = 'Stopping…';
+  });
+
+})();
+
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

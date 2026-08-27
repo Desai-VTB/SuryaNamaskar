@@ -1,0 +1,16 @@
+{
+  "name": "Surya Namaskar — Guided Practice",
+  "short_name": "Surya Namaskar",
+  "description": "Voice-guided Sun Salutation practice with breath cues and hold timers.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1B1035",
+  "theme_color": "#1B1035",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
